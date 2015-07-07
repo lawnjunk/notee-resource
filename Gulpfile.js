@@ -2,14 +2,27 @@ var gulp = require('gulp');
 var nodemon = require('gulp-nodemon');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
+var mocha = require('gulp-mocha');
 
 var paths = {
   server: ['./*.js', './lib/**/*.js', './model/**/*.js', './routes/**/*.js'],
-  client: []
+  serverTest: ['./test/*-test.js'],
+  client: [],
 }
 
 gulp.task('nodemon', function(){
   nodemon({script: './server.js', ext: 'js'});
+});
+
+gulp.task('test:server', function(){
+  var options = { 
+    reporter: 'nyan',
+    captureFile: false,
+    quiet: false,
+    clearRequireCache: false
+  };
+  return gulp.src(paths.serverTest, {read: false})
+    .pipe(mocha(options));
 });
 
 gulp.task('lint', function(){
