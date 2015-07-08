@@ -8,7 +8,7 @@ var paths = {
   server: ['./*.js', './lib/**/*.js', './model/**/*.js', './routes/**/*.js'],
   serverTest: ['./test/*-test.js'],
   client: [],
-};
+}
 
 gulp.task('nodemon', function(){
   nodemon({script: './server.js', ext: 'js'});
@@ -35,20 +35,14 @@ gulp.task('lint', function(){
 		"after": true,
 		"beforeEach": true,
 		"afterEach": true
-    }
-  };
+	}
+}
   gulp.src(paths.server).pipe(jshint(options)).pipe(jshint.reporter(stylish)); 
 });
 
 
-gulp.task('watch:lint', function(){
+gulp.task('watch', function(){
   gulp.watch(paths.server, ['lint']);
-});
-
-gulp.task('watch:lul', function(){
-  gulp.watch(paths.server, function(){
-    console.log('hey sup?');
-  });
 });
 
 gulp.task('default', ['lint']);

@@ -4,9 +4,13 @@ var mongoose = require('mongoose');
 var express = require('express');
 var app = express();
 
+
+console.log = null;
+
+
 // setup env vars
 var PORT = process.env.PORT || 3000;
-var MONGOLAB_URI = process.env.MONGOLAB_URI || 'mongodb://localhost/notes_dev'
+var MONGOLAB_URI = process.env.MONGOLAB_URI || 'mongodb://localhost/notes_dev';
 
 // connect to mongo
 mongoose.connect(MONGOLAB_URI);
