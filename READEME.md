@@ -16,7 +16,7 @@ api docs
 #### POST /api/notes
 **REQUEST**
 * body: 
- ` {text: String, eat: EatToken} `
+ ` {text: String-REQUIRED, eat: EatToken-REQUIRED} `
  * **text** - contents of the note
  * **eat** - EAT auth token, recieved at login
 **RESPONCE**

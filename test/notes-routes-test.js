@@ -41,10 +41,8 @@ describe('route/notes-routes.js', function(){
               expect.fail(null, null, "chai request error", '<3');
               done();
             }
-            expect(res.body.success).to.eql(true); 
-            expect(res.body.note.text).to.eql('get a pepper shaker for the kitchen');
-            expect(res.body.note.author).to.eql('lulwat-temp-author');
-            expect(!!res.body.note._id).to.eql(true);
+            expect(res.body.success).to.eql(false); 
+            expect(res.body.err).to.eql('Internal Server Error: Database Error');
             done();
           });
       });
