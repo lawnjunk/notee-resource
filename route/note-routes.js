@@ -22,6 +22,12 @@ module.exports = function(router){
           err: "Internal Server Error: Database Error"
         });
       }
+      if (data.length === 0){
+        res.status(400).json({
+          success:false,
+          err: "NO DATA: no notes in database"
+        });
+      }
       res.status(200).json({
         success: true,
         notes: data
@@ -43,10 +49,16 @@ module.exports = function(router){
           err: "Internal Server Error: Database Error"
         });
       }
-        res.status(200).json({
+      if (data.length == 1){
+        return res.status(200).json({
           success: true,
-          note: data
+          note: data[0]
         });
+      }
+      res.status(400).json({
+        success:false,
+        err: "BAD REQUEST: could not retrieve note"
+      });
     });
   });
 
@@ -74,32 +86,55 @@ module.exports = function(router){
   });
 
 
-// put 
-router.put('/notes/:id', function(req, res){
-  console.log("HIT_ROUTE: PUT /api/nots/:id");
-  Note.update({_id: req.params.id}, req.body, null, function(err, data){
-    if (err) {
-      console.error(err);
-      return res.status(500).json({
+  // put 
+  router.put('/notes/:id', function(req, res){
+    console.log("HIT_ROUTE: PUT /api/notes/:id");
+    Note.update({_id: req.params.id}, req.body, null, function(err, data){
+      if (err) {
+        console.error(err);
+        return res.status(500).json({
+          success: false,
+          err: "Internal Server Error: Database Error"
+        });
+      }
+      if (data.ok){
+        return res.status(200).json({
+          success: true,
+          note: data
+        });
+      }
+      res.status(400).json({
         success: false,
-        err: "Internal Server Error: Database Error"
+        err: "BAD REQUEST: could not update note"
       });
-    }
-    if (data.ok){
-      return res.status(200).json({
-        success: true,
-        note: data
-      });
-    }
-    res.status(400).json({
-      success: false,
-      err: "BAD REQUEST: could not update note"
     });
   });
-});
   
   // del
-  router.put('/notes', function(req, res){
+  router.delete('/notes/:id', function(req, res){
+    console.log("HIT_ROTE: DELETE /api/notes/:id");
+    Note.remove({_id: req.params.id}, function(err, data){
+      if (err){
+        console.error(err);
+        return res.status(500).json({
+          success: false,
+          err: "Internal Server Error: Database Error"
+        });
+      }
+
+      if (data.n > 0){
+        return res.status(200).json({
+          success: true,
+          note: data
+        }); 
+      }
+
+      res.status(400).json({
+        success: false,
+        note: data
+      });
+
+    });
   });
 
 
