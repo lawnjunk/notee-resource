@@ -4,12 +4,24 @@ var mongoose = require('mongoose');
 var express = require('express');
 var app = express();
 
-var MONGOLAB_URI = process.env.MONGOLAB_URI || 'mongodb://localhost/notes_dev'
+console.log('argv ', process.argv);
 
+// setup env vars
+var PORT = process.env.PORT || 3000;
+var MONGOLAB_URI = process.env.MONGOLAB_URI || 'mongodb://localhost/notes_dev';
+
+// connect to mongo
 mongoose.connect(MONGOLAB_URI);
 
-var port = process.env.PORT || 3000;
+// init routes routers
+var noteRouter = express.Router();
 
-app.listen(port, function(){
-  console.log('server is running on port: ' + port);
+// setup routes
+require('./route/note-routes.js')(noteRouter);
+
+// load routes
+app.use('/api/', noteRouter);
+
+app.listen(PORT, function(){
+  console.log('server is running on PORT: ' + PORT);
 });
