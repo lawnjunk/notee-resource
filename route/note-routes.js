@@ -2,6 +2,7 @@
 
 var Note = require('../model/note.js');
 var bodyparser = require('body-parser');
+var Promise = require('promise');
 
 module.exports = function(router){
   // parse req.body
@@ -72,9 +73,30 @@ module.exports = function(router){
     });
   });
 
-  // put 
-  router.put('/notes', function(req, res){
+
+// put 
+router.put('/notes/:id', function(req, res){
+  console.log("HIT_ROUTE: PUT /api/nots/:id");
+  Note.update({_id: req.params.id}, req.body, null, function(err, data){
+    if (err) {
+      console.error(err);
+      return res.status(500).json({
+        success: false,
+        err: "Internal Server Error: Database Error"
+      });
+    }
+    if (data.ok){
+      return res.status(200).json({
+        success: true,
+        note: data
+      });
+    }
+    res.status(400).json({
+      success: false,
+      err: "BAD REQUEST: could not update note"
+    });
   });
+});
   
   // del
   router.put('/notes', function(req, res){
