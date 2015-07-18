@@ -37,8 +37,15 @@ module.exports = function(router){
     Note.find({_id: req.params.id}, function(err, data){
       if (err) {
         console.log(err);
-        return
+        return res.status(500).json({
+          success: false,
+          err: "Internal Server Error: Database Error"
+        });
       }
+        res.status(200).json({
+          success: true,
+          note: data
+        });
     });
   });
 

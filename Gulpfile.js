@@ -5,7 +5,7 @@ var stylish = require('jshint-stylish');
 var mocha = require('gulp-mocha');
 
 var paths = {
-  server: ['./*.js', './lib/**/*.js', './model/**/*.js', './routes/**/*.js'],
+  server: ['./*.js', './lib/**/*.js', './model/**/*.js', './route/**/*.js'],
   serverTest: ['./test/*-test.js'],
   client: [],
 };
