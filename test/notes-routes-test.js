@@ -11,7 +11,6 @@ chai.use(chaihttp);
 var NOTES_APP_URL = 'localhost:3000';
 //process.env.MONGOLAB_URI = 'mongodb://localhost/notes_app_test';
 
-
 describe('route/notes-routes.js', function(){
   var server;
   before(function(done){
@@ -73,7 +72,7 @@ describe('route/notes-routes.js', function(){
 
   after(function(done){
     Note.remove({}, function(err, data){
-      if (err) console.log(err);
+      if (err) //console.log(err);
       done();
     });
     server.kill();

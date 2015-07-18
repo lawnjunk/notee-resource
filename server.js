@@ -4,9 +4,7 @@ var mongoose = require('mongoose');
 var express = require('express');
 var app = express();
 
-
-console.log = null;
-
+console.log('argv ', process.argv);
 
 // setup env vars
 var PORT = process.env.PORT || 3000;
