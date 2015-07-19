@@ -1,8 +1,10 @@
 var gulp = require('gulp');
+var gutil = require('gulp-util');
 var nodemon = require('gulp-nodemon');
 var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
 var mocha = require('gulp-mocha');
+var exec = require('child_process').exec;
 
 var paths = {
   server: ['./*.js', './lib/**/*.js', './model/**/*.js', './route/**/*.js'],
@@ -10,9 +12,26 @@ var paths = {
   client: [],
 };
 
-gulp.task('nodemon', function(){
+gulp.task('nodemon:start', function(){
   nodemon({script: './server.js', ext: 'js'});
 });
+
+gulp.task('gulp:stop', function(){
+  exec('killall gulp');
+});
+
+gulp.task('mongo:start', function(){
+  var md = exec('mongod --dbpath=db &', function(err, stdout, stderr){
+    if (err) {
+      console.error(err);
+    }
+  });
+});
+
+gulp.task('mongo:stop', function(done){
+  exec('mongo admin --eval "db.shutdownServer();"');
+});
+
 
 gulp.task('test:server', function(){
   var options = { 
@@ -50,5 +69,8 @@ gulp.task('watch:lul', function(){
     console.log('hey sup?');
   });
 });
+
+gulp.task('server:devup', ['mongo:start', 'nodemon:start']);
+gulp.task('server:devdown', ['mongo:stop','gulp:stop']);
 
 gulp.task('default', ['lint']);
