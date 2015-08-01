@@ -8,11 +8,12 @@ var passport = require('passport');
 console.log('argv ', process.argv);
 
 // setup env vars
-var PORT = process.env.PORT || 3000;
-var MONGOLAB_URI = process.env.MONGOLAB_URI || 'mongodb://localhost/notes_dev';
+process.env.PORT = process.env.PORT || 3000;
+process.env.MONGOLAB_URI = process.env.MONGOLAB_URI || 'mongodb://localhost/notes_dev';
+process.env.APP_SECRET = process.env.APP_SECRET || 'this is a bogus dev app secret';
 
 // connect to mongo
-mongoose.connect(MONGOLAB_URI);
+mongoose.connect(process.env.MONGOLAB_URI);
 
 // setup passport stratagy
 app.use(passport.initialize());
@@ -30,6 +31,6 @@ require('./route/user-routes.js')(userRouter, passport);
 app.use('/api/', noteRouter);
 app.use('/api/', userRouter);
 
-app.listen(PORT, function(){
-  console.log('server is running on PORT: ' + PORT);
+app.listen(process.env.PORT, function(){
+  console.log('server is running on PORT: ' + process.env.PORT);
 });

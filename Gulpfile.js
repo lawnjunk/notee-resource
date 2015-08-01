@@ -70,7 +70,7 @@ gulp.task('watch:lul', function(){
   });
 });
 
-gulp.task('server:devup', ['mongo:start', 'nodemon:start']);
-gulp.task('server:devdown', ['mongo:stop','gulp:stop']);
+gulp.task('server:up', ['mongo:start', 'nodemon:start']);
+gulp.task('server:down', ['mongo:stop','gulp:stop']);
 
 gulp.task('default', ['lint']);
