@@ -6,6 +6,7 @@ module.exports = function(router, passport){
   router.use(bodyparser.json());
 
   router.post('/user', function(req, res){
+    console.log('HIT-ROTUE: POST /api/user');
     var newUser = new User({username: req.body.username});
     newUser.basic.email = req.body.email;
     var fromBase64toAlpha = function(str){
@@ -15,8 +16,6 @@ module.exports = function(router, passport){
       }
       return null;
     }
-    console.log("body password:", req.body.password);
-    console.log('base64 decode body password:', fromBase64toAlpha(req.body.password));
 
     var decoded = fromBase64toAlpha(req.body.password);
     if (!decoded){
@@ -65,26 +64,21 @@ module.exports = function(router, passport){
   });
 
   router.get('/user/login', passport.authenticate('basic', {session:false}),  function(req, res){
-   console.log('headers', req.headers);
+   console.log('HIT-ROUTE: GET api/usr/login');
+    req.user.generateEatToken('lulwat slug note app secret' , function(err, eatToken){
+      if (err){
+        console.error(err);
+        return res.status(500).json({
+          success:false,
+          err: "INTERNAL SERVER ERROR: could not complete request"
+        });
+      }  
 
-   console.log('hit login');
-    //console.log('req user', req.user);
-    //console.log('strat email:', email);
-    //console.log('strat pass:', password);
-    //req.user.generateEatToken('lulwat slug note app secret' , function(err, eatToken){
-      //if (err){
-        //console.error(err);
-        //return res.status(500).json({
-          //success:false,
-          //err: "INTERNAL SERVER ERROR: could not complete request"
-        //});
-      //}  
-
-      //console.log('hey');
-      //res.status(200).json({
-        //success: true,
-        //eatToken: eatToken
-      //});
-    //});
+      console.log('hey');
+      res.status(200).json({
+        success: true,
+        eatToken: eatToken
+      });
+    });
   });
 };
