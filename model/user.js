@@ -47,6 +47,8 @@ userSchema.methods.checkPassword = function(password, callback){
 
 userSchema.methods.generateEatToken = function(secret, callback){
   console.log('what is happening');
+  console.log('secret:', secret);
+  console.log('this id:', this._id);
   eat.encode({id: this._id}, secret, callback);
 };
 
