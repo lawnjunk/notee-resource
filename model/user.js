@@ -43,6 +43,7 @@ userSchema.methods.genPasswordHash = function(password, callback){
 
 userSchema.methods.checkPassword = function(password, callback){
   bcrypt.compare(password, this.basic.password, callback);
+
 };
 
 userSchema.methods.generateEatToken = function(secret, callback){
