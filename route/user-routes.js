@@ -65,7 +65,7 @@ module.exports = function(router, passport){
 
   router.get('/user/login', passport.authenticate('basic', {session:false}),  function(req, res){
    console.log('HIT-ROUTE: GET api/usr/login');
-    req.user.generateEatToken('lulwat slug note app secret' , function(err, eatToken){
+    req.user.generateEatToken(process.env.APP_SECRET,  function(err, eatToken){
       if (err){
         console.error(err);
         return res.status(500).json({
@@ -74,7 +74,6 @@ module.exports = function(router, passport){
         });
       }  
 
-      console.log('hey');
       res.status(200).json({
         success: true,
         eatToken: eatToken
