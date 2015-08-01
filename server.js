@@ -5,8 +5,6 @@ var express = require('express');
 var app = express();
 var passport = require('passport');
 
-console.log('argv ', process.argv);
-
 // setup env vars
 process.env.PORT = process.env.PORT || 3000;
 process.env.MONGOLAB_URI = process.env.MONGOLAB_URI || 'mongodb://localhost/notes_dev';

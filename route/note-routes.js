@@ -3,6 +3,7 @@
 var Note = require('../model/note.js');
 var bodyparser = require('body-parser');
 var Promise = require('promise');
+var eatauth = require('../lib/eatauth.js')(process.env.APP_SECRET);
 
 module.exports = function(router){
   // parse req.body
@@ -66,9 +67,9 @@ module.exports = function(router){
   // /notes :: body -> {text: String, eat: EatToken}
   // success: -> {success: true, note: String}
   // failure: -> {success: false, err: String}
-  router.post('/notes', function(req, res){
-    //console.log('HIT_ROUTE: POST /api/notes');
-    var data = { author: 'lulwat-temp-author', text: req.body.text };
+  router.post('/notes', eatauth, function(req, res){
+    console.log('HIT_ROUTE: POST /api/notes');
+    var data = { author: req.user.username, text: req.body.text };
     var note = new Note(data);
     note.save(function(err, data){
       if (err){
