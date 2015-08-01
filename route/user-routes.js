@@ -10,11 +10,12 @@ module.exports = function(router, passport){
     var newUser = new User({username: req.body.username});
     newUser.basic.email = req.body.email;
     var fromBase64toAlpha = function(str){
-      var decoded =  new Buffer(str, 'base64').toString('utf8');
+      var decoded =  new Buffer(str, 'base64').toString('utf8').trim();
       if (/^([a-zA-Z0-9]|(-|_|!|@|#|\$|%|\^|&|\*|\)|\())+$/.test(decoded)){
         return decoded;
+      } else {
+        return null;
       }
-      return null;
     }
 
     var decoded = fromBase64toAlpha(req.body.password);
@@ -23,7 +24,7 @@ module.exports = function(router, passport){
       res.status(400).json({success:false, err: 'password incorrect character range'});
     }
 
-    newUser.genPasswordHash(fromBase64toAlpha(req.body.password), function(err, data){
+    newUser.genPasswordHash(decoded, function(err, data){
       if (err) {
         console.log('failed to hash password');
         console.error(err);
@@ -33,7 +34,6 @@ module.exports = function(router, passport){
         });
       }
       newUser.basic.password = data;
-      console.log('newuser pass', newUser.basic.password);
       newUser.save(function(err, data){
         if(err){
           console.log('failed to save user');
