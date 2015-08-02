@@ -20,7 +20,7 @@ module.exports = function(router){
         //console.log('ERROR GET /notes', err.message);
         return res.status(500).json({
           success: false, 
-          err: "Internal Server Error: Database Error"
+          err: "Internal Server Error: could not complete request"
         });
       }
       if (data.length === 0){
@@ -47,7 +47,7 @@ module.exports = function(router){
         console.log(err);
         return res.status(500).json({
           success: false,
-          err: "Internal Server Error: Database Error"
+          err: "Internal Server Error: could not complete request"
         });
       }
       if (data.length == 1){
@@ -76,7 +76,7 @@ module.exports = function(router){
         //console.log('Error POST /notes');
         return res.status(500).json({
           success: false, 
-          err: "Internal Server Error: Database Error"
+          err: "Internal Server Error: could not complete request"
         }); 
       }
       res.status(200).json({
@@ -88,25 +88,30 @@ module.exports = function(router){
 
 
   // put 
-  router.put('/notes/:id', function(req, res){
+  router.put('/notes/:id',eatauth, function(req, res){
     console.log("HIT-ROUTE: PUT /api/notes/:id");
-    Note.update({_id: req.params.id}, req.body, null, function(err, data){
+    Note.update({_id: req.params.id, author: req.user.username }, req.body, null, function(err, data){
       if (err) {
-        console.error(err);
-        return res.status(500).json({
+        console.error(err.message);
+        return res.status(400).json({
           success: false,
-          err: "Internal Server Error: Database Error"
+          err: "BAD REQUEST: note not found"
         });
       }
       if (data.ok){
-        return res.status(200).json({
-          success: true,
-          note: data
+        if (data.nModified === 1){
+          return res.status(200).json({
+            success: true,
+          });
+        } 
+        return res.status(404).json({
+        success: false,
+        err: "BAD REQUEST: note not found"
         });
       }
-      res.status(400).json({
+      res.status(404).json({
         success: false,
-        err: "BAD REQUEST: could not update note"
+        err: "BAD REQUEST: note not found"
       });
     });
   });
@@ -119,7 +124,7 @@ module.exports = function(router){
         console.error(err);
         return res.status(500).json({
           success: false,
-          err: "Internal Server Error: Database Error"
+          err: "Internal Server Error: could not complete request"
         });
       }
 

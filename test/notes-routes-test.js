@@ -17,6 +17,7 @@ describe('route/notes-routes.js', function(){
   // setup
   // get user with eat
   var eatToken;
+  var note;
   before(function(done){
     if (!server.isRunning){
       server.listen(3000, function(){
@@ -72,6 +73,7 @@ describe('route/notes-routes.js', function(){
             if (err) {
               console.log(err);
             }
+              note = res.body.note;
               response = res;
               done();
         });
@@ -128,4 +130,77 @@ describe('route/notes-routes.js', function(){
       });
     });
   });
+
+  describe('PUT /api/notes/:id', function(){
+    describe('with valid input', function(){
+      var response;
+      before(function(done){
+        sa.put('localhost:3000/api/notes/' + note._id)
+          .send({
+            text: 'this is the new text',
+            eat: eatToken
+          }).end(function(err, res){
+            if (err) console.log(err);
+            response = res;
+            done();
+          });
+      });
+
+      it('res.status should equal 200', function(){
+        expect(response.status).to.eql(200);
+      });
+
+      it('res.body.success should equal true', function(){
+        expect(response.body.success).to.eql(true);
+      });
+    });
+
+
+    describe('with invalid eat', function(){
+      var response;
+      before(function(done){
+        sa.put('localhost:3000/api/notes/' + note._id)
+          .send({
+            text: 'this is the new text',
+            eat: 'bad eat' 
+          }).end(function(err, res){
+            response = res;
+            done();
+          });
+      });
+
+      it('res.status should equal 401', function(){
+        expect(response.status).to.eql(401);
+      });
+      
+      it('res.body.err should equal "UNAUTHORIZED: invalid eat token"', function(){
+        expect(response.body.err).to.eql('UNAUTHORIZED: invalid eat token');
+      });
+    });
+    
+    describe('with invalid note id', function(){
+      var response;
+      before(function(done){
+        sa.put('localhost:3000/api/notes/' + note._id + 'bad_id')
+          .send({
+            text: 'this is the new text',
+            eat: eatToken 
+          }).end(function(err, res){
+            response = res;
+            done();
+          });
+      });
+
+      it('res.status should equal 400', function(){
+        expect(response.status).to.eql(400);
+      });
+
+      it('res.body.err should equal "BAD REQUEST: note not found"', function(){
+        expect(response.body.err).to.eql('BAD REQUEST: note not found');
+      });
+
+
+
+    });
+  }); 
 });
