@@ -20,15 +20,15 @@ module.exports = function(router, passport){
 
     var decoded = fromBase64toAlpha(req.body.password);
     if (!decoded){
-      console.log('password was not correct char range or was not base64');
-      res.status(400).json({success:false, err: 'INVALID PASSWORD'});
+      console.log('VALIDATION ERROR: password was not correct char range or was not base64');
+      return res.status(400).json({success:false, err: 'VALIDATION ERROR: invalid password'});
     }
 
     newUser.genPasswordHash(decoded, function(err, data){
       if (err) {
-        console.log('failed to hash password');
+        console.log('INTERNAL SERVER ERROR: failed to hash password');
         console.error(err);
-        res.status(500).json({
+        return res.status(500).json({
           success: false,
           err: "INTERNAL SERVER ERROR: failed to complete request"
         });
@@ -63,26 +63,8 @@ module.exports = function(router, passport){
     });
   });
 
-  //router.get('/user/login', passport.authenticate('basic', {session:false}),  function(req, res){
-   //console.log('HIT-ROUTE: GET api/usr/login');
-    //req.user.generateEatToken(process.env.APP_SECRET,  function(err, eatToken){
-      //if (err){
-        //console.error(err);
-        //return res.status(500).json({
-          //success:false,
-          //err: "INTERNAL SERVER ERROR: could not complete request"
-        //});
-      //}  
-
-      //res.status(200).json({
-        //success: true,
-        //eatToken: eatToken
-      //});
-    //});
-  //});
-  //
-
   router.get('/user/login', function(req,res,next){
+    console.log('HIT-ROUTE: GET /api/user/login');
     passport.authenticate('basic', function(err, user, info){
       if (err){
         console.error(err);
