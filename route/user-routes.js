@@ -5,6 +5,10 @@ var eatAuth = require('../lib/eatauth.js');
 module.exports = function(router, passport){
   router.use(bodyparser.json());
 
+  // POST
+  // /user :: body -> {username: String, password: base64 String, email: String}
+  // success: -> {success: true, eatToken: eatToken}
+  // failure: -> {success: false, err: String} 
   router.post('/user', function(req, res){
     console.log('HIT-ROTUE: POST /api/user');
     var newUser = new User({username: req.body.username});
@@ -63,6 +67,10 @@ module.exports = function(router, passport){
     });
   });
 
+  // GET
+  // /user/login :: basic auth 
+  // success: -> {success: true, eatToken: eatToken}
+  // failure: -> {success: false, err: String}
   router.get('/user/login', function(req,res,next){
     console.log('HIT-ROUTE: GET /api/user/login');
     passport.authenticate('basic', function(err, user, info){
