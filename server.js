@@ -2,8 +2,9 @@
 
 var mongoose = require('mongoose');
 var express = require('express');
-var app = express();
+var app =  express();
 var passport = require('passport');
+var http = require('http');
 
 // setup env vars
 process.env.PORT = process.env.PORT || 3000;
@@ -29,6 +30,7 @@ require('./route/user-routes.js')(userRouter, passport);
 app.use('/api/', noteRouter);
 app.use('/api/', userRouter);
 
-app.listen(process.env.PORT, function(){
+module.exports = http.createServer(app).listen(process.env.PORT, function(){
   console.log('server is running on PORT: ' + process.env.PORT);
 });
+
