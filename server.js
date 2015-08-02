@@ -30,7 +30,10 @@ require('./route/user-routes.js')(userRouter, passport);
 app.use('/api/', noteRouter);
 app.use('/api/', userRouter);
 
-module.exports = http.createServer(app).listen(process.env.PORT, function(){
+var server  = http.createServer(app).listen(process.env.PORT, function(){
+  server.isRunning = true;
   console.log('server is running on PORT: ' + process.env.PORT);
 });
+
+module.exports = server;
 

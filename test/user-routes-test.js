@@ -1,3 +1,4 @@
+//delete require.cache;
 var chai =  require('chai');
 var expect = chai.expect;
 var chaihttp = require('chai-http');
@@ -5,11 +6,28 @@ chai.use(chaihttp);
 var User = require('../model/user.js');
 var NOTES_APP_URL = 'localhost:3000';
 
+//console.log('request uc', uc.uncache);
+
+
 var server = require('../server.js');
+console.log(server);;
 
 describe('route/user-routes.js', function(){
   var createUserEatToken;
   var loginUserEatToken;
+
+  before(function(done){
+    if (!server.isRunning){ 
+      server.listen(3000, function(){
+        console.log(server);
+        console.log('starting server on port 3000');
+        done();
+      });
+    } else {
+      done();
+    }
+
+  });
 
   describe('POST /api/user', function(){
     describe('with invalid password', function(done){

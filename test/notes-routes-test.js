@@ -1,5 +1,6 @@
 'use strict';
 
+delete require.cache;
 var Note = require('../model/note.js');
 var User = require('../model/user.js');
 var mocha = require('mocha');
@@ -9,8 +10,8 @@ var chaihttp = require('chai-http');
 var sa = require('superagent');
 chai.use(chaihttp);
 
-var server = require('../server.js');
-
+var server = require('../server.js').listen(3000);
+server.listen(3000);
 var NOTES_APP_URL = 'localhost:3000';
 
 describe('route/notes-routes.js', function(){
@@ -18,6 +19,18 @@ describe('route/notes-routes.js', function(){
   // get user with eat
   var eatToken;
   before(function(done){
+    if (!server.isRunning){
+      server.listen(3000, function(){
+        server.isRunning = true;
+        console.log('server is running on port 3000');
+        done();
+      });
+    } else {
+      done();
+    }
+   });
+
+   before(function(done){
     sa.post('localhost:3000/api/user')
       .send({
         username:'testuser',
@@ -38,6 +51,7 @@ describe('route/notes-routes.js', function(){
       User.remove({}, function(err, data){
       if (err) console.log(err);
         server.close(function(){
+          server.isRunning = false;
           console.log('shutdown server');
           done();
         });;
