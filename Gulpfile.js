@@ -5,6 +5,7 @@ var jshint = require('gulp-jshint');
 var stylish = require('jshint-stylish');
 var mocha = require('gulp-mocha');
 var exec = require('child_process').exec;
+var _ = require('lodash');
 
 var paths = {
   server: ['./*.js', './lib/**/*.js', './model/**/*.js', './route/**/*.js'],
@@ -56,7 +57,7 @@ gulp.task('lint', function(){
 		"afterEach": true
     }
   };
-  gulp.src(paths.server).pipe(jshint(options)).pipe(jshint.reporter(stylish)); 
+  gulp.src(_.union(paths.server, paths.serverTest)).pipe(jshint(options)).pipe(jshint.reporter(stylish)); 
 });
 
 
@@ -73,4 +74,4 @@ gulp.task('watch:lul', function(){
 gulp.task('server:up', ['mongo:start', 'nodemon:start']);
 gulp.task('server:down', ['mongo:stop','gulp:stop']);
 
-gulp.task('default', ['lint']);
+gulp.task('default', ['lint', 'test:server']);

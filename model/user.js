@@ -38,7 +38,7 @@ userSchema.methods.genPasswordHash = function(password, callback){
     callback(null, data);
   }).catch(function(err){
     callback(err);
-  });;
+  });
 };
 
 userSchema.methods.checkPassword = function(password, callback){
