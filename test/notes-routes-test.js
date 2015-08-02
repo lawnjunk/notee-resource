@@ -199,8 +199,71 @@ describe('route/notes-routes.js', function(){
         expect(response.body.err).to.eql('BAD REQUEST: note not found');
       });
 
-
-
     });
   }); 
+
+  describe('DELETE /api/notes/:id', function(){
+    describe('with invalid eat', function(){
+      var response;
+      before(function(done){
+        sa.del('localhost:3000/api/notes/' + note._id)
+          .send({
+            eat: 'bad token' 
+          }).end(function(err, res){
+            response = res;
+            done();
+          });
+      });
+
+      it('res.status should equal 401', function(){
+        expect(response.status).to.eql(401);
+      });
+
+      it('res.body.err should equal "UNAUTHORIZED: invalid eat token"', function(){
+        expect(response.body.err).to.eql('UNAUTHORIZED: invalid eat token');
+      });
+    });
+
+    describe('with invalid id', function(){
+      var response;
+      before(function(done){
+        sa.del('localhost:3000/api/notes/' + note._id + 'bad id')
+          .send({
+            eat: eatToken 
+          }).end(function(err, res){
+            response = res;
+            done();
+          });
+      });
+
+      it('res.status should equal 400', function(){
+        expect(response.status).to.eql(400);
+      });
+
+      it('res.body.err should equal "BAD REQUEST: note not found"', function(){
+        expect(response.body.err).to.eql('BAD REQUEST: note not found');
+      });
+    });
+
+    describe('with valid input', function(){
+      var response;
+      before(function(done){
+        sa.del('localhost:3000/api/notes/' + note._id)
+          .send({
+            eat: eatToken 
+          }).end(function(err, res){
+            response = res;
+            done();
+          });
+      });
+
+      it('res.status should equal 200', function(){
+        expect(response.status).to.eql(200);
+      });
+
+      it('res.body.success should equal true', function(){
+        expect(response.body.success).to.eql(true);
+      });
+    });
+  });
 });

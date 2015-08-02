@@ -121,27 +121,29 @@ module.exports = function(router){
   });
   
   // del
-  router.delete('/notes/:id', function(req, res){
-    console.log("HIT_ROTE: DELETE /api/notes/:id");
-    Note.remove({_id: req.params.id}, function(err, data){
+  // /api/nots/:id :: body -> {eat: eatToken} 
+  // success: -> {success: true}
+  // failure: -> {success: false, err: string}
+  router.delete('/notes/:id', eatauth,  function(req, res){
+    console.log("HIT-ROUTE: DELETE /api/notes/:id");
+    Note.remove({_id: req.params.id, author: req.user.username}, function(err, data){
       if (err){
         console.error(err);
-        return res.status(500).json({
+        return res.status(400).json({
           success: false,
-          err: "Internal Server Error: could not complete request"
+          err: "BAD REQUEST: note not found"
         });
       }
 
-      if (data.n > 0){
+      if (data.result.n > 0){
         return res.status(200).json({
           success: true,
-          note: data
         }); 
       }
 
       res.status(400).json({
         success: false,
-        note: data
+        err: "BAD REQUEST: note not found"
       });
 
     });
