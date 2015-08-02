@@ -2,7 +2,6 @@
 
 var Note = require('../model/note.js');
 var bodyparser = require('body-parser');
-var Promise = require('promise');
 var eatauth = require('../lib/eatauth.js')(process.env.APP_SECRET);
 
 module.exports = function(router){
