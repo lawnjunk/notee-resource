@@ -14,7 +14,7 @@ module.exports = function(router){
   // success: -> {success: true, notes: [Note]}
   // failure: -> {success: false, err: String}
   router.get('/notes', function(req, res){
-    console.log('HIT_ROUTE: GET /api/notes');
+    console.log('HIT-ROUTE: GET /api/notes');
     Note.find({}, function(err, data){
       if (err) {
         //console.log('ERROR GET /notes', err.message);
@@ -41,7 +41,7 @@ module.exports = function(router){
   // success: -> {success: true, note: Note}
   // failure: -> {success: false, err: String}
   router.get('/notes/:id', function(req, res){
-    console.log('HIT_ROUTE: GET /api/notes/:id');
+    console.log('HIT-ROUTE: GET /api/notes/:id');
     Note.find({_id: req.params.id}, function(err, data){
       if (err) {
         console.log(err);
@@ -68,7 +68,7 @@ module.exports = function(router){
   // success: -> {success: true, note: String}
   // failure: -> {success: false, err: String}
   router.post('/notes', eatauth, function(req, res){
-    console.log('HIT_ROUTE: POST /api/notes');
+    console.log('HIT-ROUTE: POST /api/notes');
     var data = { author: req.user.username, text: req.body.text };
     var note = new Note(data);
     note.save(function(err, data){
@@ -89,7 +89,7 @@ module.exports = function(router){
 
   // put 
   router.put('/notes/:id', function(req, res){
-    console.log("HIT_ROUTE: PUT /api/notes/:id");
+    console.log("HIT-ROUTE: PUT /api/notes/:id");
     Note.update({_id: req.params.id}, req.body, null, function(err, data){
       if (err) {
         console.error(err);

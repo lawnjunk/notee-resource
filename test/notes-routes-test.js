@@ -1,6 +1,5 @@
 'use strict';
 
-delete require.cache;
 var Note = require('../model/note.js');
 var User = require('../model/user.js');
 var mocha = require('mocha');
@@ -22,7 +21,7 @@ describe('route/notes-routes.js', function(){
     if (!server.isRunning){
       server.listen(3000, function(){
         server.isRunning = true;
-        console.log('server is running on port 3000');
+        console.log('Server is running on port 3000');
         done();
       });
     } else {
@@ -52,7 +51,7 @@ describe('route/notes-routes.js', function(){
       if (err) console.log(err);
         server.close(function(){
           server.isRunning = false;
-          console.log('shutdown server');
+          console.log('Server has shutdown');
           done();
         });;
       });
@@ -64,7 +63,6 @@ describe('route/notes-routes.js', function(){
     describe('with valid input', function(){
       var response;
       before(function(done){
-      console.log('that eat', eatToken);
         chai.request(NOTES_APP_URL)
           .post('/api/notes')
           .send({
@@ -104,7 +102,6 @@ describe('route/notes-routes.js', function(){
     describe('with invalid eat', function(){
       var response;
       before(function(done){
-        console.log('that eat', eatToken);
           chai.request(NOTES_APP_URL)
             .post('/api/notes')
             .send({

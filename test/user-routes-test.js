@@ -1,4 +1,3 @@
-//delete require.cache;
 var chai =  require('chai');
 var expect = chai.expect;
 var chaihttp = require('chai-http');
@@ -6,7 +5,6 @@ chai.use(chaihttp);
 var User = require('../model/user.js');
 var NOTES_APP_URL = 'localhost:3000';
 
-//console.log('request uc', uc.uncache);
 
 
 var server = require('../server.js');
@@ -18,8 +16,8 @@ describe('route/user-routes.js', function(){
   before(function(done){
     if (!server.isRunning){ 
       server.listen(3000, function(){
-        console.log(server);
-        console.log('starting server on port 3000');
+        console.log('Starting server on port 3000');
+        server.isRunning = true;
         done();
       });
     } else {
@@ -43,6 +41,7 @@ describe('route/user-routes.js', function(){
           .post('/api/user')
           .send(body)
           .end(function(err, res){
+            if (err) console.log(err);
             response = res;
             done();
         });
@@ -56,14 +55,13 @@ describe('route/user-routes.js', function(){
         expect(response.body.success).to.eql(false);
       });
 
-      it('res.body.err should be "INVALID PASSWORD"', function(){
-        expect(response.body.err).to.eql("INVALID PASSWORD");
+      it('res.body.err should be "VALIDATION ERROR: invalid password"', function(){
+        expect(response.body.err).to.eql("VALIDATION ERROR: invalid password");
       });
     });
 
     describe('with valid password', function(done){
       var encoded = new Buffer('testpassword').toString('base64');
-      console.log('encoded:', encoded);
       var body = {
         username: 'test',
         email: 'test@test.com',
@@ -178,7 +176,7 @@ describe('route/user-routes.js', function(){
     
   });
 
-  describe('compare create and login eat token', function(){
+  describe('Compare create and login eat token', function(){
     it('create user eat token should equal user login eat token', function(){
       expect(createUserEatToken).to.eql(loginUserEatToken);
     });
