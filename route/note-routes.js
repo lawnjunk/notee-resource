@@ -20,7 +20,7 @@ module.exports = function(router){
         //console.log('ERROR GET /notes', err.message);
         return res.status(500).json({
           success: false, 
-          err: "Internal Server Error: Database Error"
+          err: "Internal Server Error: could not complete request"
         });
       }
       if (data.length === 0){
@@ -47,7 +47,7 @@ module.exports = function(router){
         console.log(err);
         return res.status(500).json({
           success: false,
-          err: "Internal Server Error: Database Error"
+          err: "Internal Server Error: could not complete request"
         });
       }
       if (data.length == 1){
@@ -76,7 +76,7 @@ module.exports = function(router){
         //console.log('Error POST /notes');
         return res.status(500).json({
           success: false, 
-          err: "Internal Server Error: Database Error"
+          err: "Internal Server Error: could not complete request"
         }); 
       }
       res.status(200).json({
@@ -88,51 +88,62 @@ module.exports = function(router){
 
 
   // put 
-  router.put('/notes/:id', function(req, res){
+  // /api/notes/:id :: body -> {text: String, eat: eatToken}
+  // success: -> {success: true}
+  // faliure: -> {success: false, err: String}
+  router.put('/notes/:id',eatauth, function(req, res){
     console.log("HIT-ROUTE: PUT /api/notes/:id");
-    Note.update({_id: req.params.id}, req.body, null, function(err, data){
+
+    Note.update({_id: req.params.id, author: req.user.username }, {$set: {text: req.body.text}}, null, function(err, data){
       if (err) {
-        console.error(err);
-        return res.status(500).json({
+        console.error(err.message);
+        return res.status(400).json({
           success: false,
-          err: "Internal Server Error: Database Error"
+          err: "BAD REQUEST: note not found"
         });
       }
       if (data.ok){
-        return res.status(200).json({
-          success: true,
-          note: data
+        if (data.nModified === 1){
+          return res.status(200).json({
+            success: true,
+          });
+        } 
+        return res.status(404).json({
+        success: false,
+        err: "BAD REQUEST: note not found"
         });
       }
-      res.status(400).json({
+      res.status(404).json({
         success: false,
-        err: "BAD REQUEST: could not update note"
+        err: "BAD REQUEST: note not found"
       });
     });
   });
   
   // del
-  router.delete('/notes/:id', function(req, res){
-    console.log("HIT_ROTE: DELETE /api/notes/:id");
-    Note.remove({_id: req.params.id}, function(err, data){
+  // /api/nots/:id :: body -> {eat: eatToken} 
+  // success: -> {success: true}
+  // failure: -> {success: false, err: string}
+  router.delete('/notes/:id', eatauth,  function(req, res){
+    console.log("HIT-ROUTE: DELETE /api/notes/:id");
+    Note.remove({_id: req.params.id, author: req.user.username}, function(err, data){
       if (err){
         console.error(err);
-        return res.status(500).json({
+        return res.status(400).json({
           success: false,
-          err: "Internal Server Error: Database Error"
+          err: "BAD REQUEST: note not found"
         });
       }
 
-      if (data.n > 0){
+      if (data.result.n > 0){
         return res.status(200).json({
           success: true,
-          note: data
         }); 
       }
 
       res.status(400).json({
         success: false,
-        note: data
+        err: "BAD REQUEST: note not found"
       });
 
     });
