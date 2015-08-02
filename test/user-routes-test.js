@@ -16,6 +16,19 @@ describe('route/user-routes.js', function(){
   var createUserEatToken;
   var loginUserEatToken;
 
+  before(function(done){
+    if (!server.isRunning){ 
+      server.listen(3000, function(){
+        console.log(server);
+        console.log('starting server on port 3000');
+        done();
+      });
+    } else {
+      done();
+    }
+
+  });
+
   describe('POST /api/user', function(){
     describe('with invalid password', function(done){
       var body = {
