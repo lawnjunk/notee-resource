@@ -88,9 +88,13 @@ module.exports = function(router){
 
 
   // put 
+  // /api/notes/:id :: body -> {text: String, eat: eatToken}
+  // success: -> {success: true}
+  // faliure: -> {success: false, err: String}
   router.put('/notes/:id',eatauth, function(req, res){
     console.log("HIT-ROUTE: PUT /api/notes/:id");
-    Note.update({_id: req.params.id, author: req.user.username }, req.body, null, function(err, data){
+
+    Note.update({_id: req.params.id, author: req.user.username }, {$set: {text: req.body.text}}, null, function(err, data){
       if (err) {
         console.error(err.message);
         return res.status(400).json({
