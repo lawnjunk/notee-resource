@@ -10,7 +10,6 @@ var NOTES_APP_URL = 'localhost:3000';
 
 
 var server = require('../server.js');
-console.log(server);;
 
 describe('route/user-routes.js', function(){
   var createUserEatToken;
@@ -120,8 +119,8 @@ describe('route/user-routes.js', function(){
         expect(response.body.success).to.eql(false);
       });
 
-      it('res.body.err should equal "UNAUTHORIZED: incorrect password"', function(){
-        expect(response.body.err).to.eql("UNAUTHORIZED: incorrect password");
+      it('res.body.err should equal "UNAUTHORIZED: pasword invalid"', function(){
+        expect(response.body.err).to.eql("UNAUTHORIZED: password invalid");
       });
     });
 
@@ -145,8 +144,8 @@ describe('route/user-routes.js', function(){
         expect(response.body.success).to.eql(false);
       });
 
-      it('res.body.err should equal "UNAUTHORIZED: no such user"', function(){
-        expect(response.body.err).to.eql("UNAUTHORIZED: no such user");
+      it('res.body.err should equal "UNAUTHORIZED: user not found"', function(){
+        expect(response.body.err).to.eql("UNAUTHORIZED: user not found");
       });
     });
 
@@ -186,9 +185,7 @@ describe('route/user-routes.js', function(){
   });
   
   after(function(done){
-    console.log('lulwat');
     User.remove({}, function(err, data){
-      console.log('lulwat delete the users');
       if (err) console.log(err);
       server.close(function(){
         console.log('Server has shutdown'); 

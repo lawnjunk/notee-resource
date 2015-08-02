@@ -126,8 +126,8 @@ describe('route/notes-routes.js', function(){
         expect(response.body.success).to.eql(false);
       });
 
-      it('res.body.err should be "INVALID INPUT: must provide valid eat token"', function(){
-        expect(response.body.err).to.eql('INVALID INPUT: must provide valid eat token');
+      it('res.body.err should be "UNAUTHORIZED: invalid eat token"', function(){
+        expect(response.body.err).to.eql('UNAUTHORIZED: invalid eat token');
       });
     });
   });

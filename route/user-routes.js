@@ -86,31 +86,14 @@ module.exports = function(router, passport){
     passport.authenticate('basic', function(err, user, info){
       if (err){
         console.error(err);
-        switch(err){
-          case "USER":
-            res.status(401).json({
-              success: false,
-              err: "UNAUTHORIZED: no such user"
-            });
-            break;
-          case "PASSWORD":
-            res.status(401).json({
-              success: false,
-              err: "UNAUTHORIZED: incorrect password"
-            });
-            break;
-          default:
-            res.status(500).json({
-              success: false,
-              err: "INTERNAL SERVER ERROR: could not complete request"
-            });
-            break;
-        }
+        res.status(401).json({
+          success:false,
+          err: err
+        });
         return next();
       }
 
       user.generateEatToken(process.env.APP_SECRET,  function(err, eatToken){
-        console.log('generateEatToken');
         if (err){
           console.error(err);
           res.status(500).json({
