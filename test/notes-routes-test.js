@@ -1,81 +1,120 @@
 'use strict';
 
 var Note = require('../model/note.js');
+var User = require('../model/user.js');
 var mocha = require('mocha');
 var expect = require('chai').expect;
 var chai = require('chai');
 var chaihttp = require('chai-http');
-var fork  = require('child_process').fork;
+var sa = require('superagent');
 chai.use(chaihttp);
 
+var server = require('../server.js');
+
 var NOTES_APP_URL = 'localhost:3000';
-//process.env.MONGOLAB_URI = 'mongodb://localhost/notes_app_test';
 
 describe('route/notes-routes.js', function(){
-  var server;
+  // setup
+  // get user with eat
+  var eatToken;
   before(function(done){
-    var serverOptions = { 
-      env: { MONGOLAB_URI: 'mongodb://localhost/notes_app_test'} ,
-      silent: true
-      
-    };
-    server = fork('./server.js', [], serverOptions);
-
-    done();
+    sa.post('localhost:3000/api/user')
+      .send({
+        username:'testuser',
+        email:'test@test.com',
+        password:'dGVzdHBhc3N3b3Jk'
+      })
+      .end(function(err, res){
+        eatToken = res.body.eatToken;
+        done();
+      });
   });
 
-  it('',function(){
-    
+   
+  // taredown
+  after(function(done){
+    Note.remove({}, function(err, data){
+      if (err) console.log(err);
+      User.remove({}, function(err, data){
+      if (err) console.log(err);
+        server.close(function(){
+          console.log('shutdown server');
+          done();
+        });;
+      });
+    });
   });
 
+  // test
   describe('POST: /api/notes', function(){
-  
     describe('with valid input', function(){
-      it('response should be succesfull', function(done){
+      var response;
+      before(function(done){
+      console.log('that eat', eatToken);
         chai.request(NOTES_APP_URL)
           .post('/api/notes')
           .send({
-            text: 'get a pepper shaker for the kitchen',
-            eat: 'this is a test eat'})
+            text: 'this be note text',
+            eat: eatToken})
           .end(function(err, res){
             if (err) {
-              expect.fail(null, null, "chai request error", '<3');
-              done();
+              console.log(err);
             }
-            expect(res.body.success).to.eql(true); 
-            expect(res.body.note.text).to.eql('get a pepper shaker for the kitchen');
-            expect(res.body.note.author).to.eql('lulwat-temp-author');
-            expect(!!res.body.note._id).to.eql(true);
-            done();
+              response = res;
+              done();
+        });
+      });
+
+      it('res.status should equal 200', function(){
+        expect(response.status).to.eql(200);
+      });
+
+      it('res.body.success should equal true', function(){
+        expect(response.body.success).to.eql(true); 
+      });
+
+      it('res.body.note.text should equal "this be note text"', function(){
+        expect(response.body.note.text).to.eql('this be note text');
+      });
+
+      it('res.body.note.author should equal testuser', function(){
+        expect(response.body.note.author).to.eql('testuser');
+      });
+
+      it('res.body.note should contain a propertie _id', function(){
+        expect(!!response.body.note._id).to.eql(true);
+      });
+
+    });
+
+    describe('with invalid eat', function(){
+      var response;
+      before(function(done){
+        console.log('that eat', eatToken);
+          chai.request(NOTES_APP_URL)
+            .post('/api/notes')
+            .send({
+              text: 'this be note text',
+              eat: 'wat bad token'})
+            .end(function(err, res){
+              if (err) {
+              }
+                response = res;
+                done();
           });
       });
-    });
 
-    describe('with valid input', function(){
-      it('response should be succesfull', function(done){
-        chai.request(NOTES_APP_URL)
-          .post('/api/notes')
-          .send({})
-          .end(function(err, res){
-            if (err) {
-              expect.fail(null, null, "chai request error", '<3');
-              done();
-            }
-            expect(res.body.success).to.eql(false); 
-            expect(res.body.err).to.eql('Internal Server Error: Database Error');
-            done();
-          });
+      it('res.status should be 400', function(){
+        expect(response.status).to.eql(401);
+      });
+
+      it('res.body.success should be false', function(){
+        expect(response.body.success).to.eql(false);
+      });
+
+      it('res.body.err should be "INVALID INPUT: must provide valid eat token"', function(){
+        expect(response.body.err).to.eql('INVALID INPUT: must provide valid eat token');
       });
     });
-
-  });
-
-  after(function(done){
-    Note.remove({}, function(err, data){
-      if (err) //console.log(err);
-      done();
-    });
-    server.kill();
-    done();
   });
 });
