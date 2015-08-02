@@ -1,3 +1,4 @@
+//delete require.cache;
 var chai =  require('chai');
 var expect = chai.expect;
 var chaihttp = require('chai-http');
@@ -5,7 +6,11 @@ chai.use(chaihttp);
 var User = require('../model/user.js');
 var NOTES_APP_URL = 'localhost:3000';
 
+//console.log('request uc', uc.uncache);
+
+
 var server = require('../server.js');
+console.log(server);;
 
 describe('route/user-routes.js', function(){
   var createUserEatToken;

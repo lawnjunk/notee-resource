@@ -1,5 +1,6 @@
 'use strict';
 
+delete require.cache;
 var Note = require('../model/note.js');
 var User = require('../model/user.js');
 var mocha = require('mocha');
@@ -9,8 +10,8 @@ var chaihttp = require('chai-http');
 var sa = require('superagent');
 chai.use(chaihttp);
 
-var server = require('../server.js');
-
+var server = require('../server.js').listen(3000);
+server.listen(3000);
 var NOTES_APP_URL = 'localhost:3000';
 
 describe('route/notes-routes.js', function(){
