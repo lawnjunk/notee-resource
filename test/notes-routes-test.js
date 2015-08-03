@@ -14,6 +14,7 @@ server.listen(3000);
 var NOTES_APP_URL = 'localhost:3000';
 
 describe('route/notes-routes.js', function(){
+  
   // setup
   // get user with eat
   var eatToken;
@@ -42,7 +43,6 @@ describe('route/notes-routes.js', function(){
         done();
       });
   });
-
    
   // taredown
   after(function(done){
@@ -131,6 +131,85 @@ describe('route/notes-routes.js', function(){
     });
   });
 
+  describe('GET /api/notes', function(){
+    describe('with valid input', function(){
+      var response;
+      before(function(done){
+        sa.get('localhost:3000/api/notes')
+          .end(function(err, res){
+            if (err) console.log(err);
+            response = res;
+            done();
+          });
+      });
+
+      it('res.status should equal 200', function(){
+        expect(response.status).to.eql(200);
+      });
+      
+      it('res.body.notes should be an Array', function(){
+        expect(Array.isArray(response.body.notes)).to.eql(true);
+      });
+
+      it('res.body.notes[0]._id should equal _id of original post response', function(){
+        expect(response.body.notes[0]._id).to.eql(note._id);
+      });
+
+    });
+  });
+
+  describe('GET /api/notes/:id', function(){
+    describe('with invalid id', function(){
+      var response;
+      before(function(done){
+        sa.get('localhost:3000/api/notes/' + note._id + 'bad-id')
+          .end(function(err, res){
+            if (err) console.log(err);
+            response = res;
+            done();
+          });
+      });
+
+      it('res.status should equal 400', function(){
+        expect(response.status).to.eql(400);
+        console.log(response.body);
+      });  
+
+      it('res.body.success should equal false', function(){
+        expect(response.body.success).to.eql(false);
+      });
+
+      it('res.body.err should equal "BAD REQUEST: note not found"', function(){
+        expect(response.body.err).to.eql("BAD REQUEST: note not found");
+      });
+    });
+
+    describe('with valid input', function(){
+      var response;
+      before(function(done){
+        sa.get('localhost:3000/api/notes/' + note._id)
+          .end(function(err, res){
+            if (err) console.log(err);
+            response = res;
+            done();
+          });
+      });
+
+      it('res.status should equal 200', function(){
+        expect(response.status).to.eql(200);
+        console.log(response.body);
+      });
+
+      it('res.body.success should equal true', function(){
+        expect(response.body.success).to.eql(true);
+      });
+
+      it('res.body.note._id should equal _id of original post response', function(){
+        expect(response.body.note._id).to.eql(note._id);
+      });
+    });
+  });
+
   describe('PUT /api/notes/:id', function(){
     describe('with valid input', function(){
       var response;
@@ -181,7 +260,7 @@ describe('route/notes-routes.js', function(){
     describe('with invalid note id', function(){
       var response;
       before(function(done){
-        sa.put('localhost:3000/api/notes/' + note._id + 'bad_id')
+        sa.put('localhost:3000/api/notes/' + note._id + 'bad-id')
           .send({
             text: 'this is the new text',
             eat: eatToken 
@@ -227,7 +306,7 @@ describe('route/notes-routes.js', function(){
     describe('with invalid id', function(){
       var response;
       before(function(done){
-        sa.del('localhost:3000/api/notes/' + note._id + 'bad id')
+        sa.del('localhost:3000/api/notes/' + note._id + 'bad-id')
           .send({
             eat: eatToken 
           }).end(function(err, res){
