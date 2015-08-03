@@ -44,9 +44,9 @@ module.exports = function(router){
     Note.find({_id: req.params.id}, function(err, data){
       if (err) {
         console.log(err);
-        return res.status(500).json({
+        return res.status(400).json({
           success: false,
-          err: "Internal Server Error: could not complete request"
+          err: "BAD REQUEST: note not found"
         });
       }
       if (data.length == 1){
@@ -127,7 +127,7 @@ module.exports = function(router){
     console.log("HIT-ROUTE: DELETE /api/notes/:id");
     Note.remove({_id: req.params.id, author: req.user.username}, function(err, data){
       if (err){
-        console.error(err);
+        console.error(err.message);
         return res.status(400).json({
           success: false,
           err: "BAD REQUEST: note not found"
