@@ -9,6 +9,7 @@ var chaihttp = require('chai-http');
 var sa = require('superagent');
 chai.use(chaihttp);
 
+process.env.MONGOLAB_URI = "mongodb://localhost/notes_test";
 var server = require('../server.js').listen(3000);
 server.listen(3000);
 var NOTES_APP_URL = 'localhost:3000';

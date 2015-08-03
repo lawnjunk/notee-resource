@@ -6,7 +6,7 @@ var User = require('../model/user.js');
 var NOTES_APP_URL = 'localhost:3000';
 
 
-
+process.env.MONGOLAB_URI = "mongodb://localhost/notes_test";
 var server = require('../server.js');
 
 describe('route/user-routes.js', function(){
