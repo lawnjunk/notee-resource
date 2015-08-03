@@ -111,8 +111,6 @@ describe('route/notes-routes.js', function(){
               text: 'this be note text',
               eat: 'wat bad token'})
             .end(function(err, res){
-              if (err) {
-              }
                 response = res;
                 done();
           });
@@ -165,7 +163,6 @@ describe('route/notes-routes.js', function(){
       before(function(done){
         sa.get('localhost:3000/api/notes/' + note._id + 'bad-id')
           .end(function(err, res){
-            if (err) console.log(err);
             response = res;
             done();
           });
@@ -173,7 +170,6 @@ describe('route/notes-routes.js', function(){
 
       it('res.status should equal 400', function(){
         expect(response.status).to.eql(400);
-        console.log(response.body);
       });  
 
       it('res.body.success should equal false', function(){
@@ -198,7 +194,6 @@ describe('route/notes-routes.js', function(){
 
       it('res.status should equal 200', function(){
         expect(response.status).to.eql(200);
-        console.log(response.body);
       });
 
       it('res.body.success should equal true', function(){

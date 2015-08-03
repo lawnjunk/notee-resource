@@ -23,7 +23,6 @@ describe('route/user-routes.js', function(){
     } else {
       done();
     }
-
   });
 
   describe('POST /api/user', function(){

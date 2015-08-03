@@ -43,7 +43,7 @@ module.exports = function(router){
     console.log('HIT-ROUTE: GET /api/notes/:id');
     Note.find({_id: req.params.id}, function(err, data){
       if (err) {
-        console.log(err);
+        console.log(err.message);
         return res.status(400).json({
           success: false,
           err: "BAD REQUEST: note not found"
